@@ -7,6 +7,10 @@ export interface ChatModelCard {
   deploymentName?: string;
   description?: string;
   /**
+   *  dify agent api key
+   */
+  difyAgentApiKey?: string;
+  /**
    * the name show for end user
    */
   displayName?: string;

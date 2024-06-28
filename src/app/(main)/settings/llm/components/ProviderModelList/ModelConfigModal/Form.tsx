@@ -9,11 +9,12 @@ import MaxTokenSlider from './MaxTokenSlider';
 interface ModelConfigFormProps {
   initialValues?: ChatModelCard;
   onFormInstanceReady: (instance: FormInstance) => void;
+  provider?: string;
   showAzureDeployName?: boolean;
 }
 
 const ModelConfigForm = memo<ModelConfigFormProps>(
-  ({ showAzureDeployName, onFormInstanceReady, initialValues }) => {
+  ({ provider, showAzureDeployName, onFormInstanceReady, initialValues }) => {
     const { t } = useTranslation('setting');
 
     const [formInstance] = Form.useForm();
@@ -39,6 +40,17 @@ const ModelConfigForm = memo<ModelConfigFormProps>(
           style={{ marginTop: 16 }}
           wrapperCol={{ offset: 1, span: 18 }}
         >
+          {provider === 'dify' && (
+            <Form.Item
+              extra={t('llm.customModelCards.modelConfig.difyAgentApiKey.extra')}
+              label={t('llm.customModelCards.modelConfig.difyAgentApiKey.title')}
+              name={'difyAgentApiKey'}
+            >
+              <Input
+                placeholder={t('llm.customModelCards.modelConfig.difyAgentApiKey.placeholder')}
+              />
+            </Form.Item>
+          )}
           <Form.Item
             extra={t('llm.customModelCards.modelConfig.id.extra')}
             label={t('llm.customModelCards.modelConfig.id.title')}

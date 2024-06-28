@@ -39,7 +39,10 @@ export const DEFAULT_LLM_CONFIG: UserModelProviderConfig = {
     enabledModels: filterEnabledModels(DeepSeekProviderCard),
   },
   dify: {
-    // enabled: false,
+    customModelCards: [
+      { difyAgentApiKey: 'app-Gpp2qSghApwB90jRomEMcMNL', id: 'dify-chat' },
+      { difyAgentApiKey: 'app-QbylE3DuZgs7sAg8k7VYrFXs', id: 'test' },
+    ],
     enabled: true,
     enabledModels: filterEnabledModels(DifyProviderCard),
   },

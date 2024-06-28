@@ -1,6 +1,8 @@
 import { getPreferredRegion } from '@/app/api/config';
 import { createErrorResponse } from '@/app/api/errorResponse';
 import { AgentRuntime, ChatCompletionErrorPayload } from '@/libs/agent-runtime';
+import { useUserStore } from '@/store/user';
+import { modelConfigSelectors } from '@/store/user/selectors';
 import { ChatErrorType } from '@/types/fetch';
 import { ChatStreamPayload } from '@/types/openai/chat';
 import { getTracePayload } from '@/utils/trace';
@@ -39,7 +41,26 @@ export const POST = checkAuth(async (req: Request, { params, jwtPayload, createR
       });
     }
 
-    return await agentRuntime.chat(data, { user: jwtPayload.userId, ...traceOptions });
+    if (provider === 'dify') {
+      const modelCard = modelConfigSelectors.getCustomModelCard({ id: data.model, provider })(
+        useUserStore.getState(),
+      );
+
+      console.log('tracePayload', tracePayload);
+
+      agentRuntime = await initAgentRuntimeWithUserPayload(provider, {
+        ...jwtPayload,
+        apiKey: modelCard?.difyAgentApiKey,
+      });
+      // console.log('POSTPOSTPOST', data, params, jwtPayload, tracePayload, traceOptions, modelCard)
+    }
+
+    return await agentRuntime.chat(data, {
+      user: jwtPayload.userId,
+      ...traceOptions,
+      sessionId: tracePayload?.sessionId,
+      topicId: tracePayload?.topicId,
+    });
   } catch (e) {
     const {
       errorType = ChatErrorType.InternalServerError,

@@ -60,6 +60,11 @@
       "config": "配置模型",
       "confirmDelete": "即将删除该自定义模型，删除后将不可恢复，请谨慎操作。",
       "modelConfig": {
+        "difyAgentApiKey": {
+          "extra": "对应dify agent的API密钥",
+          "placeholder": "请填写API Key",
+          "title": "API Key"
+        },
         "azureDeployName": {
           "extra": "在 Azure OpenAI 中实际请求的字段",
           "placeholder": "请输入 Azure 中的模型部署名称",

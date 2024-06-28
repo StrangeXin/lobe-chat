@@ -3,6 +3,7 @@ import { fileEnv } from '@/config/file';
 import { langfuseEnv } from '@/config/langfuse';
 import { getLLMConfig } from '@/config/llm';
 import {
+  DifyProviderCard,
   OllamaProviderCard,
   OpenAIProviderCard,
   OpenRouterProviderCard,
@@ -35,6 +36,7 @@ export const getServerGlobalConfig = () => {
     ENABLED_QWEN,
     ENABLED_STEPFUN,
     ENABLED_DIFY,
+    DIFY_MODEL_LIST,
 
     ENABLED_AZURE_OPENAI,
     AZURE_MODEL_LIST,
@@ -73,7 +75,14 @@ export const getServerGlobalConfig = () => {
       },
       bedrock: { enabled: ENABLED_AWS_BEDROCK },
       deepseek: { enabled: ENABLED_DEEPSEEK },
-      dify: { enabled: ENABLED_DIFY },
+      dify: {
+        enabled: ENABLED_DIFY,
+        enabledModels: extractEnabledModels(DIFY_MODEL_LIST),
+        serverModelCards: transformToChatModelCards({
+          defaultChatModels: DifyProviderCard.chatModels,
+          modelString: DIFY_MODEL_LIST,
+        }),
+      },
       google: { enabled: ENABLED_GOOGLE },
       groq: { enabled: ENABLED_GROQ },
       minimax: { enabled: ENABLED_MINIMAX },
