@@ -45,6 +45,7 @@ export const DB_MessageSchema = z.object({
   quotaId: z.string().optional(),
   sessionId: z.string(),
   topicId: z.string().nullable().optional(),
+  conversation_id: z.string().optional(),
 });
 
 export type DB_Message = z.infer<typeof DB_MessageSchema>;

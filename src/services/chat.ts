@@ -429,6 +429,7 @@ class ChatService {
         case 'assistant': {
           return {
             content: m.content,
+            conversation_id: m.conversation_id,
             role: m.role,
             tool_calls: m.tools?.map(
               (tool): MessageToolCall => ({

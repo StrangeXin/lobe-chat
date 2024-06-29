@@ -23,6 +23,7 @@ export interface OpenAIChatMessage {
    * @description 消息内容
    */
   content: string | UserMessageContentPart[];
+  conversation_id?: string;
 
   name?: string;
   /**

@@ -46,13 +46,10 @@ export const POST = checkAuth(async (req: Request, { params, jwtPayload, createR
         useUserStore.getState(),
       );
 
-      console.log('tracePayload', tracePayload);
-
       agentRuntime = await initAgentRuntimeWithUserPayload(provider, {
         ...jwtPayload,
         apiKey: modelCard?.difyAgentApiKey,
       });
-      // console.log('POSTPOSTPOST', data, params, jwtPayload, tracePayload, traceOptions, modelCard)
     }
 
     return await agentRuntime.chat(data, {

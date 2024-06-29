@@ -1,6 +1,3 @@
-import { useUserStore } from '@/store/user';
-import { modelConfigSelectors } from '@/store/user/selectors';
-
 import { LobeRuntimeAI } from '../BaseAI';
 import { AgentRuntimeErrorType } from '../error';
 import {
@@ -15,29 +12,6 @@ import { StreamingResponse } from '../utils/response';
 import { DifyStream } from '../utils/streams';
 
 const DEFAULT_BASE_URL = 'https://api.dify.ai/v1';
-// let conversation_id: string;
-
-// interface DifyBaseResponse {
-//   code?: string;
-//   message?: string;
-//   status?: number;
-// }
-
-// type DifyResponse = Partial<StreamEventData> & DifyBaseResponse; // TODO ChatCompletionChunk
-
-// function throwIfErrorResponse(data: DifyResponse) {
-//   if (!data.status) {
-//     return;
-//   }
-//   throw AgentRuntimeError.chat({
-//     error: {
-//       code: data.status,
-//       message: data.message,
-//     },
-//     errorType: AgentRuntimeErrorType.ProviderBizError,
-//     provider: ModelProvider.Dify,
-//   });
-// }
 
 export function parseDifyResponse(chunk: string): StreamEventData {
   // 有可能一次返回多条
@@ -87,20 +61,7 @@ export function parseDifyResponse(chunk: string): StreamEventData {
   }
   lastLineObj.answer = answerAll;
 
-  // 记录会话id
-  // if (lastLineObj.conversation_id) {
-  //   conversation_id = lastLineObj.conversation_id;
-  // }
   return lastLineObj;
-
-  // let body = chunk;
-  // if (body.startsWith('data:')) {
-  //   body = body.slice(5).trim();
-  // }
-  // if (isEmpty(body)) {
-  //   return;
-  // }
-  // return JSON.parse(body) as DifyResponse;
 }
 
 export class LobeDifyAI implements LobeRuntimeAI {
@@ -115,15 +76,7 @@ export class LobeDifyAI implements LobeRuntimeAI {
   }
 
   async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions): Promise<Response> {
-    const res = modelConfigSelectors.getCustomModelCard({ id: payload.model, provider: 'dify' })(
-      useUserStore.getState(),
-    );
-
-    // const enableFetchOnClient = modelConfigSelectors.isProviderFetchOnClient(provider)(
-    //   useUserStore.getState(),
-    // );
-
-    console.log('payload', payload, res, this.apiKey);
+    // console.log('payload', payload, options, this.apiKey);
 
     try {
       const response = await fetch(`${this.baseURL}/chat-messages`, {
@@ -147,16 +100,6 @@ export class LobeDifyAI implements LobeRuntimeAI {
       }
 
       const [prod] = response.body.tee();
-
-      // const [prod, body2] = response.body.tee();
-      // const [prod2, debug] = body2.tee();
-
-      // if (process.env.DEBUG_DIFY_CHAT_COMPLETION === '1') {
-      //   debugStream(debug).catch(console.error);
-      // }
-
-      // await this.parseFirstResponse(prod2.getReader());
-
       return StreamingResponse(DifyStream(prod, options?.callback), { headers: options?.headers });
     } catch (error) {
       console.log('error', error);
@@ -181,39 +124,22 @@ export class LobeDifyAI implements LobeRuntimeAI {
   private buildCompletionsParams(payload: ChatStreamPayload, options?: ChatCompetitionOptions) {
     const { messages, ...params } = payload;
 
-    // TODO 不同类型应用传参不一样
+    let conversation_id = '';
+    const mobj = messages.findLast((m) => m.role === 'assistant' && m.conversation_id);
+    if (mobj) {
+      conversation_id = mobj.conversation_id || '';
+      // console.log('conversation_id', conversation_id)
+    }
+
     return {
       ...params,
-      // conversation_id: conversation_id, // TODO 根据会话id切换
-      conversation_id: '', // TODO 根据会话id切换
+      conversation_id: conversation_id, // 根据会话id切换
       inputs: {},
       query: messages.at(-1)?.content,
       response_mode: 'streaming',
       user: options?.user ? `lbc-user-${options?.user}` : 'lbc-user',
     };
   }
-
-  // private async parseFirstResponse(reader: ReadableStreamDefaultReader<Uint8Array>) {
-  //   const decoder = new TextDecoder();
-
-  //   const { value } = await reader.read();
-  //   const chunkValue = decoder.decode(value, { stream: true });
-  //   let data;
-  //   try {
-  //     data = parseDifyResponse(chunkValue) as any;
-
-  //     // 记录会话id
-  //     if (data?.conversation_id) {
-  //       conversation_id = data.conversation_id;
-  //     }
-  //   } catch {
-  //     // parse error, skip it
-  //     return;
-  //   }
-  //   // if (data) {
-  //   //   throwIfErrorResponse(data);
-  //   // }
-  // }
 }
 
 export default LobeDifyAI;
