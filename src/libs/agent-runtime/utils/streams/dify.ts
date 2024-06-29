@@ -15,23 +15,23 @@ export const transformDifyStream = (chunk: StreamEventData | any): StreamProtoco
     case 'message':
     case 'agent_message': {
       let chunkContent = chunk.answer;
-      return { data: chunkContent, id: chunk.message_id, type: 'text' };
+      return { data: chunkContent, id: chunk.conversation_id, type: 'text' };
     }
     case 'message_end': {
-      return { data: 'stop', id: chunk.message_id, type: 'stop' };
+      return { data: 'stop', id: chunk.conversation_id, type: 'stop' };
     }
     case 'agent_thought': {
-      return { data: chunk.thought, id: chunk.message_id, type: 'text' };
+      return { data: chunk.thought, id: chunk.conversation_id, type: 'text' };
     }
     case 'message_file': {
-      return { data: chunk.url, id: chunk.message_id, type: 'text' };
+      return { data: chunk.url, id: chunk.conversation_id, type: 'text' };
     }
     case 'message_replace': {
       // 消息内容替换事件
-      return { data: chunk.answer, id: chunk.message_id, type: 'text' };
+      return { data: chunk.answer, id: chunk.conversation_id, type: 'text' };
     }
     case 'error': {
-      return { data: 'stop', id: chunk.message_id, type: 'text' };
+      return { data: 'stop', id: `dify-${Date.now()}`, type: 'text' };
     }
     case 'ping': {
       return { data: '', id: `dify-${Date.now()}`, type: 'text' };
@@ -40,7 +40,7 @@ export const transformDifyStream = (chunk: StreamEventData | any): StreamProtoco
     case 'node_started':
     case 'node_finished':
     case 'workflow_finished': {
-      return { data: '', id: chunk.workflow_run_id, type: 'text' };
+      return { data: '', id: chunk.conversation_id, type: 'text' };
     }
     default: {
       return { data: 'stop', id: `dify-${Date.now()}`, type: 'text' };

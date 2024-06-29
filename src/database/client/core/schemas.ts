@@ -84,5 +84,6 @@ export const dbSchemaV7 = {
 export const dbSchemaV9 = {
   ...dbSchemaV7,
   messages:
-    '&id, role, content, fromModel, favorite, tool_call_id, plugin.identifier, plugin.apiName, translate.content, createdAt, updatedAt, sessionId, topicId, quotaId, parentId, [sessionId+topicId], traceId',
+    '&id, conversation_id, role, content, fromModel, favorite, tool_call_id, plugin.identifier, plugin.apiName, translate.content, createdAt, updatedAt, sessionId, topicId, quotaId, parentId, [sessionId+topicId], traceId',
+  topics: '&id, conversation_id, title, favorite, createdAt, updatedAt, sessionId',
 };

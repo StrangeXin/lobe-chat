@@ -2,7 +2,7 @@ import { ActionIcon, EditableText, Icon } from '@lobehub/ui';
 import { App, Dropdown, type MenuProps, Typography } from 'antd';
 import { createStyles } from 'antd-style';
 import {
-  LucideCopy,
+  // LucideCopy,
   LucideLoader2,
   MoreVertical,
   PencilLine,
@@ -47,7 +47,7 @@ const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
     updateTopicTitle,
     removeTopic,
     autoRenameTopicTitle,
-    duplicateTopic,
+    // duplicateTopic,
     isLoading,
   ] = useChatStore((s) => [
     s.topicRenamingId === id,
@@ -55,7 +55,7 @@ const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
     s.updateTopicTitle,
     s.removeTopic,
     s.autoRenameTopicTitle,
-    s.duplicateTopic,
+    // s.duplicateTopic,
     s.topicLoadingIds.includes(id),
   ]);
   const { styles, theme } = useStyles();
@@ -84,17 +84,17 @@ const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
           toggleEditing(true);
         },
       },
-      {
-        type: 'divider',
-      },
-      {
-        icon: <Icon icon={LucideCopy} />,
-        key: 'duplicate',
-        label: t('topic.actions.duplicate', { ns: 'chat' }),
-        onClick: () => {
-          duplicateTopic(id);
-        },
-      },
+      // {
+      //   type: 'divider',
+      // },
+      // {
+      //   icon: <Icon icon={LucideCopy} />,
+      //   key: 'duplicate',
+      //   label: t('topic.actions.duplicate', { ns: 'chat' }),
+      //   onClick: () => {
+      //     duplicateTopic(id);
+      //   },
+      // },
       // {
       //   icon: <Icon icon={LucideDownload} />,
       //   key: 'export',

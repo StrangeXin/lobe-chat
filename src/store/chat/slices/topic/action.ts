@@ -51,7 +51,7 @@ export interface ChatTopicAction {
   useFetchTopics: (sessionId: string) => SWRResponse<ChatTopic[]>;
   useSearchTopics: (keywords?: string, sessionId?: string) => SWRResponse<ChatTopic[]>;
 
-  internal_updateTopicTitleInSummary: (id: string, title: string) => void;
+  internal_updateTopicTitleInSummary: (id: string, title: string, conversation_id?: string) => void;
   internal_updateTopicLoading: (id: string, loading: boolean) => void;
   internal_createTopic: (params: CreateTopicParams) => Promise<string>;
   internal_updateTopic: (id: string, data: Partial<ChatTopic>) => Promise<void>;
@@ -136,6 +136,9 @@ export const chatTopic: StateCreator<
   },
   // update
   summaryTopicTitle: async (topicId, messages) => {
+    const conversation_id = messages.at(-1)?.conversation_id;
+
+    console.log('summaryTopicTitle', topicId, message);
     const { internal_updateTopicTitleInSummary, internal_updateTopicLoading } = get();
     const topic = topicSelectors.getTopicById(topicId)(get());
     if (!topic) return;
@@ -153,7 +156,7 @@ export const chatTopic: StateCreator<
         internal_updateTopicTitleInSummary(topicId, topic.title);
       },
       onFinish: async (text) => {
-        await get().internal_updateTopic(topicId, { title: text });
+        await get().internal_updateTopic(topicId, { title: text, conversation_id });
       },
       onLoadingChange: (loading) => {
         internal_updateTopicLoading(topicId, loading);
