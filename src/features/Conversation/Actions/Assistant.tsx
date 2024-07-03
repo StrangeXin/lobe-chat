@@ -4,12 +4,9 @@ import { memo } from 'react';
 import { useChatListActionsBar } from '../hooks/useChatListActionsBar';
 import { RenderAction } from '../types';
 import { ErrorActionsBar } from './Error';
-import { useCustomActions } from './customAction';
 
-export const AssistantActionsBar: RenderAction = memo(({ id, onActionClick, error, tools }) => {
-  const { regenerate, edit, delAndRegenerate, copy, divider, del } = useChatListActionsBar();
-  const { translate, tts } = useCustomActions();
-  const hasTools = !!tools;
+export const AssistantActionsBar: RenderAction = memo(({ id, onActionClick, error }) => {
+  const { copy } = useChatListActionsBar();
 
   if (id === 'default') return;
 
@@ -17,18 +14,20 @@ export const AssistantActionsBar: RenderAction = memo(({ id, onActionClick, erro
 
   return (
     <ActionIconGroup
-      dropdownMenu={[
-        edit,
-        copy,
-        divider,
-        tts,
-        translate,
-        divider,
-        regenerate,
-        delAndRegenerate,
-        del,
-      ]}
-      items={[hasTools ? delAndRegenerate : edit, copy]}
+      // dropdownMenu={[
+      //   edit,
+      //   copy,
+      //   divider,
+      //   tts,
+      //   translate,
+      //   divider,
+      //   regenerate,
+      //   delAndRegenerate,
+      //   del,
+      // ]}
+      // items={[hasTools ? delAndRegenerate : edit, copy]}
+      dropdownMenu={[]}
+      items={[copy]}
       onActionClick={onActionClick}
       type="ghost"
     />

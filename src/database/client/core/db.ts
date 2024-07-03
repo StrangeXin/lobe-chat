@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/numeric-separators-style */
 import Dexie, { Transaction } from 'dexie';
 
 import { MigrationLLMSettings } from '@/migrations/FromV3ToV4';
@@ -89,6 +90,90 @@ export class BrowserDB extends Dexie {
     this.plugins = this.table('plugins');
     this.sessionGroups = this.table('sessionGroups');
     this.users = this.table('users');
+
+    // Insert sessions on initialization
+    this.sessions.bulkPut([
+      {
+        config: {
+          chatConfig: {
+            autoCreateTopicThreshold: 2,
+            displayMode: 'chat',
+            enableAutoCreateTopic: true,
+            historyCount: 0,
+          },
+          model: 'test',
+          params: {
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            temperature: 0.6,
+            top_p: 1,
+          },
+          plugins: [],
+          provider: 'dify',
+          systemRole: '',
+          tts: {
+            showAllLocaleVoice: false,
+            sttLocale: 'auto',
+            ttsService: 'openai',
+            voice: {
+              openai: 'alloy',
+            },
+          },
+        },
+        createdAt: 1719974455085,
+        group: 'default',
+        id: 'cf765342-f376-4410-82a2-716365eb6f0e',
+        meta: {
+          avatar: '🤖',
+          backgroundColor: 'rgba(0,0,0,0)',
+          description: '会话描述111',
+          title: '会话名称111',
+        },
+        pinned: 0,
+        type: 'agent',
+        updatedAt: 1719974455085,
+      },
+      {
+        config: {
+          chatConfig: {
+            autoCreateTopicThreshold: 2,
+            displayMode: 'chat',
+            enableAutoCreateTopic: true,
+            historyCount: 0,
+          },
+          model: 'test',
+          params: {
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            temperature: 0.6,
+            top_p: 1,
+          },
+          plugins: [],
+          provider: 'dify',
+          systemRole: '',
+          tts: {
+            showAllLocaleVoice: false,
+            sttLocale: 'auto',
+            ttsService: 'openai',
+            voice: {
+              openai: 'alloy',
+            },
+          },
+        },
+        createdAt: 1719974455086,
+        group: 'default',
+        id: '790ec44d-502f-4486-95d0-19e7f4cab714',
+        meta: {
+          avatar: '🤖',
+          backgroundColor: 'rgba(0,0,0,0)',
+          description: '会话描述222',
+          title: '会话名称222',
+        },
+        pinned: 0,
+        type: 'agent',
+        updatedAt: 1719974455086,
+      },
+    ]);
   }
 
   /**
@@ -225,6 +310,9 @@ export class BrowserDB extends Dexie {
         user.settings = MigrationKeyValueSettings.migrateSettings(user.settings as any);
       }
     });
+
+    const sessions = trans.table('sessions');
+    await sessions.toCollection().distinct;
   };
 }
 
