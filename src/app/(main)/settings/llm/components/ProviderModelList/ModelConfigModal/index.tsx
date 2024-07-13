@@ -70,6 +70,7 @@ const ModelConfigModal = memo<ModelConfigModalProps>(({ showAzureDeployName, pro
       <ModelConfigForm
         initialValues={modelCard}
         onFormInstanceReady={setFormInstance}
+        provider={provider}
         showAzureDeployName={showAzureDeployName}
       />
     </Modal>

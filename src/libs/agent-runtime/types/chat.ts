@@ -23,6 +23,7 @@ export interface OpenAIChatMessage {
    * @description 消息内容
    */
   content: string | UserMessageContentPart[];
+  conversation_id?: string;
 
   name?: string;
   /**
@@ -94,7 +95,9 @@ export interface ChatStreamPayload {
 export interface ChatCompetitionOptions {
   callback?: ChatStreamCallbacks;
   headers?: Record<string, any>;
+  sessionId?: string;
   signal?: AbortSignal;
+  topicId?: string;
   /**
    * userId for the chat completion
    */

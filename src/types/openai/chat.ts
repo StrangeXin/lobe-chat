@@ -23,6 +23,10 @@ export interface OpenAIChatMessage {
    * @description 消息内容
    */
   content: string | UserMessageContentPart[];
+  /**
+   * dify 对话 id
+   */
+  conversation_id?: string;
 
   /**
    * @deprecated

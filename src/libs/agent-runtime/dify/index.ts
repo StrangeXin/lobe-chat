@@ -6,35 +6,12 @@ import {
   ChatStreamPayload,
   ModelProvider,
 } from '../types';
-import { StreamEventData } from '../types/dify';
+import { MessageEventData, StreamEventData } from '../types/dify';
 import { AgentRuntimeError } from '../utils/createError';
 import { StreamingResponse } from '../utils/response';
 import { DifyStream } from '../utils/streams';
 
 const DEFAULT_BASE_URL = 'https://api.dify.ai/v1';
-// let conversation_id: string;
-
-// interface DifyBaseResponse {
-//   code?: string;
-//   message?: string;
-//   status?: number;
-// }
-
-// type DifyResponse = Partial<StreamEventData> & DifyBaseResponse; // TODO ChatCompletionChunk
-
-// function throwIfErrorResponse(data: DifyResponse) {
-//   if (!data.status) {
-//     return;
-//   }
-//   throw AgentRuntimeError.chat({
-//     error: {
-//       code: data.status,
-//       message: data.message,
-//     },
-//     errorType: AgentRuntimeErrorType.ProviderBizError,
-//     provider: ModelProvider.Dify,
-//   });
-// }
 
 export function parseDifyResponse(chunk: string): StreamEventData {
   // 有可能一次返回多条
@@ -44,7 +21,7 @@ export function parseDifyResponse(chunk: string): StreamEventData {
 
   // event: ping
 
-  console.log('parseDifyResponse', chunk);
+  // console.log('parseDifyResponse', chunk);
   if (chunk.startsWith('event:')) {
     return { event: 'ping' };
   }
@@ -64,40 +41,52 @@ export function parseDifyResponse(chunk: string): StreamEventData {
     return { event: 'ping' };
   }
 
-  let lines = chunk.split('\n');
+  let lines = chunk.split('\n\n');
   let answerAll = '';
-  let lastLineObj;
-  for (let i = 0; i < lines.length - 1; i++) {
-    let line = lines[i].trim();
+  let lastLineObj: StreamEventData | undefined;
+  for (const line_ of lines) {
+    let line = line_.trim();
     if (!line.startsWith('data:')) continue;
-
     line = line.slice(5).trim();
     if (line.startsWith('{')) {
-      let chunkObj = JSON.parse(line);
+      // 特殊处理message_end截断情况
+      if (line.startsWith('{"event": "message_end"') && !line.endsWith('}')) {
+        // 使用正则表达式匹配所需的值
+        let conversationIdMatch = line.match(/"conversation_id": "(.*?)"/);
+        let messageIdMatch = line.match(/"message_id": "(.*?)"/);
+        let taskIdMatch = line.match(/"task_id": "(.*?)"/);
 
-      answerAll += chunkObj.answer;
+        return {
+          conversation_id: conversationIdMatch ? conversationIdMatch[1] : '',
+          event: 'message_end',
+          message_id: messageIdMatch ? messageIdMatch[1] : '',
+          task_id: taskIdMatch ? taskIdMatch[1] : '',
+        };
+      }
 
-      lastLineObj = chunkObj;
+      try {
+        const jsonData = JSON.parse(line);
+        // 只处理 event 为 "message" 的数据块
+        if (jsonData.event === 'message') {
+          answerAll += jsonData.answer;
+        }
+        lastLineObj = jsonData;
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        // 如果解析失败，可以选择忽略这条数据或将其标记为 ping
+      }
     } else {
       continue;
     }
   }
-  lastLineObj.answer = answerAll;
 
-  // 记录会话id
-  // if (lastLineObj.conversation_id) {
-  //   conversation_id = lastLineObj.conversation_id;
-  // }
-  return lastLineObj;
+  // 如果有 message 事件的数据块，更新其 answer 字段
+  if (lastLineObj && answerAll) {
+    (lastLineObj as MessageEventData).answer = answerAll;
+  }
 
-  // let body = chunk;
-  // if (body.startsWith('data:')) {
-  //   body = body.slice(5).trim();
-  // }
-  // if (isEmpty(body)) {
-  //   return;
-  // }
-  // return JSON.parse(body) as DifyResponse;
+  // 返回处理后的结果，如果没有 message 事件的数据块，返回默认的 ping 事件
+  return lastLineObj ?? { event: 'ping' };
 }
 
 export class LobeDifyAI implements LobeRuntimeAI {
@@ -112,6 +101,7 @@ export class LobeDifyAI implements LobeRuntimeAI {
   }
 
   async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions): Promise<Response> {
+    // console.log('payload', payload, options, this.apiKey);
     try {
       const response = await fetch(`${this.baseURL}/chat-messages`, {
         body: JSON.stringify(this.buildCompletionsParams(payload, options)),
@@ -121,6 +111,7 @@ export class LobeDifyAI implements LobeRuntimeAI {
         },
         method: 'POST',
       });
+      // console.log('response', response, payload, options, this.apiKey, this.baseURL)
       if (!response.body || !response.ok) {
         throw AgentRuntimeError.chat({
           error: {
@@ -133,16 +124,6 @@ export class LobeDifyAI implements LobeRuntimeAI {
       }
 
       const [prod] = response.body.tee();
-
-      // const [prod, body2] = response.body.tee();
-      // const [prod2, debug] = body2.tee();
-
-      // if (process.env.DEBUG_DIFY_CHAT_COMPLETION === '1') {
-      //   debugStream(debug).catch(console.error);
-      // }
-
-      // await this.parseFirstResponse(prod2.getReader());
-
       return StreamingResponse(DifyStream(prod, options?.callback), { headers: options?.headers });
     } catch (error) {
       console.log('error', error);
@@ -167,39 +148,22 @@ export class LobeDifyAI implements LobeRuntimeAI {
   private buildCompletionsParams(payload: ChatStreamPayload, options?: ChatCompetitionOptions) {
     const { messages, ...params } = payload;
 
-    // TODO 不同类型应用传参不一样
+    let conversation_id = '';
+    const mobj = messages.findLast((m) => m.role === 'assistant' && m.conversation_id);
+    if (mobj) {
+      conversation_id = mobj.conversation_id || '';
+      // console.log('conversation_id', conversation_id)
+    }
+
     return {
       ...params,
-      // conversation_id: conversation_id, // TODO 根据会话id切换
-      conversation_id: '', // TODO 根据会话id切换
+      conversation_id: conversation_id, // 根据会话id切换
       inputs: {},
       query: messages.at(-1)?.content,
       response_mode: 'streaming',
       user: options?.user ? `lbc-user-${options?.user}` : 'lbc-user',
     };
   }
-
-  // private async parseFirstResponse(reader: ReadableStreamDefaultReader<Uint8Array>) {
-  //   const decoder = new TextDecoder();
-
-  //   const { value } = await reader.read();
-  //   const chunkValue = decoder.decode(value, { stream: true });
-  //   let data;
-  //   try {
-  //     data = parseDifyResponse(chunkValue) as any;
-
-  //     // 记录会话id
-  //     if (data?.conversation_id) {
-  //       conversation_id = data.conversation_id;
-  //     }
-  //   } catch {
-  //     // parse error, skip it
-  //     return;
-  //   }
-  //   // if (data) {
-  //   //   throwIfErrorResponse(data);
-  //   // }
-  // }
 }
 
 export default LobeDifyAI;

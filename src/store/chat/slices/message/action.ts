@@ -130,6 +130,7 @@ export interface ChatMessageAction {
     id: string,
     content: string,
     toolCalls?: MessageToolCall[],
+    conversation_id?: string,
   ) => Promise<void>;
   internal_updateMessageError: (id: string, error: ChatMessageError | null) => Promise<void>;
   internal_createMessage: (
@@ -531,13 +532,14 @@ export const chatMessage: StateCreator<
         await messageService.updateMessageError(assistantId, error);
         await refreshMessages();
       },
-      onFinish: async (content, { traceId, observationId, toolCalls }) => {
+      onFinish: async (content, { conversation_id, traceId, observationId, toolCalls }) => {
         // if there is traceId, update it
         if (traceId) {
           msgTraceId = traceId;
           await messageService.updateMessage(assistantId, {
             traceId,
             observationId: observationId ?? undefined,
+            conversation_id,
           });
         }
 
@@ -546,7 +548,7 @@ export const chatMessage: StateCreator<
         }
 
         // update the content after fetch result
-        await internal_updateMessageContent(assistantId, content, toolCalls);
+        await internal_updateMessageContent(assistantId, content, toolCalls, conversation_id);
       },
       onMessageHandle: async (chunk) => {
         switch (chunk.type) {
@@ -652,7 +654,7 @@ export const chatMessage: StateCreator<
     await messageService.updateMessage(id, { error });
     await get().refreshMessages();
   },
-  internal_updateMessageContent: async (id, content, toolCalls) => {
+  internal_updateMessageContent: async (id, content, toolCalls, conversation_id) => {
     const { internal_dispatchMessage, refreshMessages, internal_transformToolCalls } = get();
 
     // Due to the async update method and refresh need about 100ms
@@ -671,6 +673,7 @@ export const chatMessage: StateCreator<
     await messageService.updateMessage(id, {
       content,
       tools: toolCalls ? internal_transformToolCalls(toolCalls) : undefined,
+      conversation_id,
     });
     await refreshMessages();
   },

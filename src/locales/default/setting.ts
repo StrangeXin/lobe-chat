@@ -65,6 +65,11 @@ export default {
           placeholder: '请输入 Azure 中的模型部署名称',
           title: '模型部署名称',
         },
+        difyAgentApiKey: {
+          extra: '对应dify agent的API密钥',
+          placeholder: '请填写API Key',
+          title: 'API Key',
+        },
         displayName: {
           placeholder: '请输入模型的展示名称，例如 ChatGPT、GPT-4 等',
           title: '模型展示名称',

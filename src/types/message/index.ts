@@ -32,6 +32,10 @@ export * from './tools';
 
 export interface ChatMessage extends BaseDataModel {
   content: string;
+  /**
+   * dify 对话 id
+   */
+  conversation_id?: string;
   error?: ChatMessageError | null;
   // 扩展字段
   extra?: {

@@ -45,6 +45,7 @@ const getCustomModelCard =
 
     const config = getProviderConfigById(provider)(s);
 
+    // console.log('getCustomModelCard', id, provider, config)
     return config?.customModelCards?.find((m) => m.id === id);
   };
 

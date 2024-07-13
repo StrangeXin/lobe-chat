@@ -46,6 +46,7 @@ export const getLLMConfig = () => {
       ENABLED_DIFY: z.boolean(),
       DIFY_API_KEY: z.string().optional(),
       DIFY_PROXY_URL: z.string().optional(),
+      DIFY_MODEL_LIST: z.string().optional(),
 
       ENABLED_ANTHROPIC: z.boolean(),
       ANTHROPIC_API_KEY: z.string().optional(),
@@ -119,6 +120,7 @@ export const getLLMConfig = () => {
       ENABLED_DIFY: !!process.env.DIFY_API_KEY,
       DIFY_API_KEY: process.env.DIFY_API_KEY,
       DIFY_PROXY_URL: process.env.DIFY_PROXY_URL,
+      DIFY_MODEL_LIST: process.env.DIFY_MODEL_LIST,
 
       ENABLED_ANTHROPIC: !!process.env.ANTHROPIC_API_KEY,
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,

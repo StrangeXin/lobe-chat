@@ -38,6 +38,7 @@ type SSEFinishType = 'done' | 'error' | 'abort';
 export type OnFinishHandler = (
   text: string,
   context: {
+    conversation_id?: string;
     observationId?: string | null;
     toolCalls?: MessageToolCall[];
     traceId?: string | null;
@@ -264,6 +265,7 @@ const createSmoothToolCalls = (params: {
 // eslint-disable-next-line no-undef
 export const fetchSSE = async (url: string, options: RequestInit & FetchSSEOptions = {}) => {
   let output = '';
+  let conversation_id = '';
   let toolCalls: undefined | MessageToolCall[];
   let triggerOnMessageHandler = false;
 
@@ -304,6 +306,10 @@ export const fetchSSE = async (url: string, options: RequestInit & FetchSSEOptio
         throw new Error(error);
       },
       onmessage: (ev) => {
+        if (ev.event === 'stop') {
+          conversation_id = ev.id;
+        }
+
         triggerOnMessageHandler = true;
         let data;
         try {
@@ -390,7 +396,13 @@ export const fetchSSE = async (url: string, options: RequestInit & FetchSSEOptio
         await toolCallsController.startAnimations(15);
       }
 
-      await options?.onFinish?.(output, { observationId, toolCalls, traceId, type: finishedType });
+      await options?.onFinish?.(output, {
+        conversation_id,
+        observationId,
+        toolCalls,
+        traceId,
+        type: finishedType,
+      });
     }
   }
 
