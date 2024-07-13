@@ -101,7 +101,7 @@ export class BrowserDB extends Dexie {
             enableAutoCreateTopic: true,
             historyCount: 0,
           },
-          model: 'test',
+          model: 'dify-01',
           params: {
             frequency_penalty: 0,
             presence_penalty: 0,
@@ -124,10 +124,10 @@ export class BrowserDB extends Dexie {
         group: 'default',
         id: 'cf765342-f376-4410-82a2-716365eb6f0e',
         meta: {
-          avatar: '🤖',
+          avatar: '✨',
           backgroundColor: 'rgba(0,0,0,0)',
-          description: '会话描述111',
-          title: '会话名称111',
+          description: '采用二极管标题法，结合正负面刺激，让标题引人入胜',
+          title: '小红书文案大师',
         },
         pinned: 0,
         type: 'agent',
@@ -141,7 +141,7 @@ export class BrowserDB extends Dexie {
             enableAutoCreateTopic: true,
             historyCount: 0,
           },
-          model: 'test',
+          model: 'dify-02',
           params: {
             frequency_penalty: 0,
             presence_penalty: 0,
@@ -164,10 +164,91 @@ export class BrowserDB extends Dexie {
         group: 'default',
         id: '790ec44d-502f-4486-95d0-19e7f4cab714',
         meta: {
-          avatar: '🤖',
+          avatar: '👮‍♂️',
           backgroundColor: 'rgba(0,0,0,0)',
-          description: '会话描述222',
-          title: '会话名称222',
+          description:
+            '专业资深的法律专家，精通各类法律法规，能够为用户提供准确、详细且具有权威性的法律建议和解读',
+          title: '法律专家',
+        },
+        pinned: 0,
+        type: 'agent',
+        updatedAt: 1719974455086,
+      },
+      {
+        config: {
+          chatConfig: {
+            autoCreateTopicThreshold: 2,
+            displayMode: 'chat',
+            enableAutoCreateTopic: true,
+            historyCount: 0,
+          },
+          model: 'dify-03',
+          params: {
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            temperature: 0.6,
+            top_p: 1,
+          },
+          plugins: [],
+          provider: 'dify',
+          systemRole: '',
+          tts: {
+            showAllLocaleVoice: false,
+            sttLocale: 'auto',
+            ttsService: 'openai',
+            voice: {
+              openai: 'alloy',
+            },
+          },
+        },
+        createdAt: 1719974455086,
+        group: 'default',
+        id: 'e5514671-09c6-4cb2-93c0-1fd060a323a9',
+        meta: {
+          avatar: '✈️',
+          backgroundColor: 'rgba(0,0,0,0)',
+          description: '您的旅行规划师，为您提供量身定制的旅行计划',
+          title: '旅行规划助手',
+        },
+        pinned: 0,
+        type: 'agent',
+        updatedAt: 1719974455086,
+      },
+      {
+        config: {
+          chatConfig: {
+            autoCreateTopicThreshold: 2,
+            displayMode: 'chat',
+            enableAutoCreateTopic: true,
+            historyCount: 0,
+          },
+          model: 'dify-04',
+          params: {
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            temperature: 0.6,
+            top_p: 1,
+          },
+          plugins: [],
+          provider: 'dify',
+          systemRole: '',
+          tts: {
+            showAllLocaleVoice: false,
+            sttLocale: 'auto',
+            ttsService: 'openai',
+            voice: {
+              openai: 'alloy',
+            },
+          },
+        },
+        createdAt: 1719974455086,
+        group: 'default',
+        id: '43977853-36bb-4176-a707-8c4541abc763',
+        meta: {
+          avatar: '🏗️',
+          backgroundColor: 'rgba(0,0,0,0)',
+          description: '工作流编排助手应用',
+          title: '聊天助手工作流编排',
         },
         pinned: 0,
         type: 'agent',
@@ -310,9 +391,6 @@ export class BrowserDB extends Dexie {
         user.settings = MigrationKeyValueSettings.migrateSettings(user.settings as any);
       }
     });
-
-    const sessions = trans.table('sessions');
-    await sessions.toCollection().distinct;
   };
 }
 

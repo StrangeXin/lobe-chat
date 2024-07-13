@@ -6,7 +6,7 @@ import {
   ChatStreamPayload,
   ModelProvider,
 } from '../types';
-import { StreamEventData } from '../types/dify';
+import { MessageEventData, StreamEventData } from '../types/dify';
 import { AgentRuntimeError } from '../utils/createError';
 import { StreamingResponse } from '../utils/response';
 import { DifyStream } from '../utils/streams';
@@ -41,27 +41,52 @@ export function parseDifyResponse(chunk: string): StreamEventData {
     return { event: 'ping' };
   }
 
-  let lines = chunk.split('\n');
+  let lines = chunk.split('\n\n');
   let answerAll = '';
-  let lastLineObj;
-  for (let i = 0; i < lines.length - 1; i++) {
-    let line = lines[i].trim();
+  let lastLineObj: StreamEventData | undefined;
+  for (const line_ of lines) {
+    let line = line_.trim();
     if (!line.startsWith('data:')) continue;
-
     line = line.slice(5).trim();
     if (line.startsWith('{')) {
-      let chunkObj = JSON.parse(line);
+      // 特殊处理message_end截断情况
+      if (line.startsWith('{"event": "message_end"') && !line.endsWith('}')) {
+        // 使用正则表达式匹配所需的值
+        let conversationIdMatch = line.match(/"conversation_id": "(.*?)"/);
+        let messageIdMatch = line.match(/"message_id": "(.*?)"/);
+        let taskIdMatch = line.match(/"task_id": "(.*?)"/);
 
-      answerAll += chunkObj.answer;
+        return {
+          conversation_id: conversationIdMatch ? conversationIdMatch[1] : '',
+          event: 'message_end',
+          message_id: messageIdMatch ? messageIdMatch[1] : '',
+          task_id: taskIdMatch ? taskIdMatch[1] : '',
+        };
+      }
 
-      lastLineObj = chunkObj;
+      try {
+        const jsonData = JSON.parse(line);
+        // 只处理 event 为 "message" 的数据块
+        if (jsonData.event === 'message') {
+          answerAll += jsonData.answer;
+        }
+        lastLineObj = jsonData;
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        // 如果解析失败，可以选择忽略这条数据或将其标记为 ping
+      }
     } else {
       continue;
     }
   }
-  lastLineObj.answer = answerAll;
 
-  return lastLineObj;
+  // 如果有 message 事件的数据块，更新其 answer 字段
+  if (lastLineObj && answerAll) {
+    (lastLineObj as MessageEventData).answer = answerAll;
+  }
+
+  // 返回处理后的结果，如果没有 message 事件的数据块，返回默认的 ping 事件
+  return lastLineObj ?? { event: 'ping' };
 }
 
 export class LobeDifyAI implements LobeRuntimeAI {
@@ -77,7 +102,6 @@ export class LobeDifyAI implements LobeRuntimeAI {
 
   async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions): Promise<Response> {
     // console.log('payload', payload, options, this.apiKey);
-
     try {
       const response = await fetch(`${this.baseURL}/chat-messages`, {
         body: JSON.stringify(this.buildCompletionsParams(payload, options)),

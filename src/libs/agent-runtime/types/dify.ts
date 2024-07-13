@@ -5,7 +5,7 @@ interface BaseEventData {
   task_id: string;
 }
 
-interface MessageEventData extends BaseEventData {
+export interface MessageEventData extends BaseEventData {
   answer: string;
   event: 'message' | 'agent_message';
 }
@@ -35,7 +35,7 @@ interface MessageEndEventData {
   conversation_id: string;
   event: 'message_end';
   message_id: string;
-  metadata: {
+  metadata?: {
     // 具体类型未知，这里使用'object'
     retriever_resources: Array<object>;
     usage: object; // 同上

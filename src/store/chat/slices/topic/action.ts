@@ -138,7 +138,6 @@ export const chatTopic: StateCreator<
   summaryTopicTitle: async (topicId, messages) => {
     const conversation_id = messages.at(-1)?.conversation_id;
 
-    console.log('summaryTopicTitle', topicId, message);
     const { internal_updateTopicTitleInSummary, internal_updateTopicLoading } = get();
     const topic = topicSelectors.getTopicById(topicId)(get());
     if (!topic) return;

@@ -314,7 +314,6 @@ export const chatMessage: StateCreator<
     // check activeTopic and then auto update topic title
     if (newTopicId) {
       const chats = chatSelectors.currentChats(get());
-      console.log('newTopicId', newTopicId, chats);
       await get().summaryTopicTitle(newTopicId, chats);
       return;
     }
@@ -534,7 +533,6 @@ export const chatMessage: StateCreator<
         await refreshMessages();
       },
       onFinish: async (content, { conversation_id, traceId, observationId, toolCalls }) => {
-        console.log('onFinish', content, conversation_id, traceId, observationId, toolCalls);
         // if there is traceId, update it
         if (traceId) {
           msgTraceId = traceId;

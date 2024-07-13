@@ -40,8 +40,11 @@ export const DEFAULT_LLM_CONFIG: UserModelProviderConfig = {
   },
   dify: {
     customModelCards: [
-      { difyAgentApiKey: 'app-Gpp2qSghApwB90jRomEMcMNL', id: 'dify-chat' },
-      { difyAgentApiKey: 'app-QbylE3DuZgs7sAg8k7VYrFXs', id: 'test' },
+      { difyAgentApiKey: 'app-NTILzt9p6vQA1Qt3hYlQSSrU', id: 'dify-chat' },
+      { difyAgentApiKey: 'app-Na3PuhMhT7VgoBKiOJ6GgSgP', id: 'dify-01' },
+      { difyAgentApiKey: 'app-r80IXh89xUJV6LRR3o5wRiNY', id: 'dify-02' },
+      { difyAgentApiKey: 'app-FPppvK0lQ6pRYV4wj9h5NAmu', id: 'dify-03' },
+      { difyAgentApiKey: 'app-Gpp2qSghApwB90jRomEMcMNL', id: 'dify-04' },
     ],
     enabled: true,
     enabledModels: filterEnabledModels(DifyProviderCard),

@@ -306,7 +306,6 @@ export const fetchSSE = async (url: string, options: RequestInit & FetchSSEOptio
         throw new Error(error);
       },
       onmessage: (ev) => {
-        console.log('ev', ev);
         if (ev.event === 'stop') {
           conversation_id = ev.id;
         }
