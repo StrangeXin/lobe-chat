@@ -1,9 +1,9 @@
 'use client';
 
 import { ActionIcon, MobileNavBar } from '@lobehub/ui';
-import { LobeChat } from '@lobehub/ui/brand';
+// import { LobeChat } from '@lobehub/ui/brand';
 import { MessageSquarePlus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { memo } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
@@ -16,15 +16,20 @@ import { mobileHeaderSticky } from '@/styles/mobileHeader';
 
 const Header = memo(() => {
   const [createSession] = useSessionStore((s) => [s.createSession]);
-  const router = useRouter();
+  // const router = useRouter();
   const { enableWebrtc, showCreateSession } = useServerConfigStore(featureFlagsSelectors);
 
   return (
     <MobileNavBar
       left={
         <Flexbox align={'center'} gap={8} horizontal style={{ marginLeft: 8 }}>
-          <UserAvatar onClick={() => router.push('/me')} size={32} />
-          <LobeChat type={'text'} />
+          <UserAvatar /*onClick={() => router.push('/me')}*/ size={32} />
+          {/* <LobeChat type={'text'} /> */}
+          <span
+            style={{ color: '#000', fontSize: '20px', fontWeight: 'bold', marginRight: '12px' }}
+          >
+            Log.AI
+          </span>
           {enableWebrtc && <SyncStatusInspector placement={'bottom'} />}
         </Flexbox>
       }

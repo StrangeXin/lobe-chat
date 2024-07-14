@@ -29,12 +29,12 @@ export const DEFAULT_FEATURE_FLAGS: IFeatureFlags = {
   openai_api_key: true,
   openai_proxy_url: true,
 
-  create_session: true,
-  edit_agent: true,
+  create_session: false,
+  edit_agent: false,
 
   dalle: true,
 
-  check_updates: true,
+  check_updates: false,
   welcome_suggest: true,
 };
 

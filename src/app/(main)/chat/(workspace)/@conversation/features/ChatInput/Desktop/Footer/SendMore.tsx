@@ -1,16 +1,20 @@
 import { Icon } from '@lobehub/ui';
 import { Button, Dropdown } from 'antd';
 import { createStyles } from 'antd-style';
-import { BotMessageSquare, LucideCheck, LucideChevronDown, MessageSquarePlus } from 'lucide-react';
+import {
+  // BotMessageSquare,
+  LucideCheck,
+  LucideChevronDown, // MessageSquarePlus
+} from 'lucide-react';
 import { memo } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
-import { Flexbox } from 'react-layout-kit';
 
-import HotKeys from '@/components/HotKeys';
+// import { Flexbox } from 'react-layout-kit';
+// import HotKeys from '@/components/HotKeys';
 import { ALT_KEY } from '@/const/hotkeys';
 import { useSendMessage } from '@/features/ChatInput/useSend';
-import { useChatStore } from '@/store/chat';
+// import { useChatStore } from '@/store/chat';
 import { useUserStore } from '@/store/user';
 import { preferenceSelectors } from '@/store/user/selectors';
 
@@ -38,7 +42,7 @@ const SendMore = memo<SendMoreProps>(({ disabled, isMac }) => {
     preferenceSelectors.useCmdEnterToSend(s),
     s.updatePreference,
   ]);
-  const addAIMessage = useChatStore((s) => s.addAIMessage);
+  // const addAIMessage = useChatStore((s) => s.addAIMessage);
 
   const sendMessage = useSendMessage();
 
@@ -78,28 +82,28 @@ const SendMore = memo<SendMoreProps>(({ disabled, isMac }) => {
               updatePreference({ useCmdEnterToSend: true });
             },
           },
-          { type: 'divider' },
-          {
-            icon: <Icon icon={BotMessageSquare} />,
-            key: 'addAi',
-            label: t('input.addAi'),
-            onClick: () => {
-              addAIMessage();
-            },
-          },
-          {
-            icon: <Icon icon={MessageSquarePlus} />,
-            key: 'addUser',
-            label: (
-              <Flexbox gap={24} horizontal>
-                {t('input.addUser')}
-                <HotKeys keys={hotKey} />
-              </Flexbox>
-            ),
-            onClick: () => {
-              sendMessage({ onlyAddUserMessage: true });
-            },
-          },
+          // { type: 'divider' },
+          // {
+          //   icon: <Icon icon={BotMessageSquare} />,
+          //   key: 'addAi',
+          //   label: t('input.addAi'),
+          //   onClick: () => {
+          //     addAIMessage();
+          //   },
+          // },
+          // {
+          //   icon: <Icon icon={MessageSquarePlus} />,
+          //   key: 'addUser',
+          //   label: (
+          //     <Flexbox gap={24} horizontal>
+          //       {t('input.addUser')}
+          //       <HotKeys keys={hotKey} />
+          //     </Flexbox>
+          //   ),
+          //   onClick: () => {
+          //     sendMessage({ onlyAddUserMessage: true });
+          //   },
+          // },
         ],
       }}
       placement={'topRight'}

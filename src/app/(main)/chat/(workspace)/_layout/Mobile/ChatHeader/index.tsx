@@ -8,6 +8,7 @@ import { useQueryRoute } from '@/hooks/useQueryRoute';
 import { featureFlagsSelectors, useServerConfigStore } from '@/store/serverConfig';
 
 import SettingButton from '../../../features/SettingButton';
+import ChatHeaderTitle from './ChatHeaderTitle';
 
 const MobileHeader = memo(() => {
   const router = useQueryRoute();
@@ -18,7 +19,7 @@ const MobileHeader = memo(() => {
 
   return (
     <MobileNavBar
-      // center={<ChatHeaderTitle />}
+      center={<ChatHeaderTitle />}
       onBackClick={() => router.push('/chat', { query: { session: '' }, replace: true })}
       right={
         <>
