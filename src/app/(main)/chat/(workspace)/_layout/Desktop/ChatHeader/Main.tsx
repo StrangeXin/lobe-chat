@@ -15,7 +15,8 @@ import { useSessionStore } from '@/store/session';
 import { sessionMetaSelectors, sessionSelectors } from '@/store/session/selectors';
 
 import { useInitAgentConfig } from '../../useInitAgentConfig';
-import Tags from './Tags';
+
+// import Tags from './Tags';
 
 const Main = memo(() => {
   const { t } = useTranslation('chat');
@@ -70,7 +71,7 @@ const Main = memo(() => {
         size={40}
         title={title}
       />
-      <ChatHeaderTitle desc={displayDesc} tag={<Tags />} title={displayTitle} />
+      <ChatHeaderTitle desc={displayDesc} /*tag={<Tags />}*/ title={displayTitle} />
     </Flexbox>
   );
 });
