@@ -40,11 +40,11 @@ export const DEFAULT_LLM_CONFIG: UserModelProviderConfig = {
   },
   dify: {
     customModelCards: [
-      { difyAgentApiKey: 'app-NTILzt9p6vQA1Qt3hYlQSSrU', id: 'dify-chat' },
-      { difyAgentApiKey: 'app-Na3PuhMhT7VgoBKiOJ6GgSgP', id: 'dify-01' },
-      { difyAgentApiKey: 'app-r80IXh89xUJV6LRR3o5wRiNY', id: 'dify-02' },
-      { difyAgentApiKey: 'app-FPppvK0lQ6pRYV4wj9h5NAmu', id: 'dify-03' },
-      { difyAgentApiKey: 'app-Gpp2qSghApwB90jRomEMcMNL', id: 'dify-04' },
+      { difyAgentApiKey: 'app-1RikCM2idGIj0mPd4OIReyPS', id: 'dify-chat' },
+      { difyAgentApiKey: 'app-pm7YHRtQINEuWxnS2qsdCuZ4', id: 'dify-01' },
+      { difyAgentApiKey: 'app-WFzjrZdAacHPUAGnOVcPSnG0', id: 'dify-02' },
+      { difyAgentApiKey: 'app-QeJnem9HDPZSQr88sMGYRdDs', id: 'dify-03' },
+      { difyAgentApiKey: 'app-d6h2JzeW2ROFDgypIBkwfmZt', id: 'dify-04' },
     ],
     enabled: true,
     enabledModels: filterEnabledModels(DifyProviderCard),
@@ -108,10 +108,10 @@ export const DEFAULT_LLM_CONFIG: UserModelProviderConfig = {
   },
 };
 
-// export const DEFAULT_MODEL = 'gpt-3.5-turbo';
+export const DEFAULT_MODEL = 'gpt-3.5-turbo';
 
-// export const DEFAULT_PROVIDER = ModelProvider.OpenAI;
+export const DEFAULT_PROVIDER = ModelProvider.OpenAI;
 
-export const DEFAULT_MODEL = 'dify-chat';
+// export const DEFAULT_MODEL = 'dify-chat';
 
-export const DEFAULT_PROVIDER = ModelProvider.Dify;
+// export const DEFAULT_PROVIDER = ModelProvider.Dify;

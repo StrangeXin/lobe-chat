@@ -532,15 +532,23 @@ export const chatMessage: StateCreator<
         await messageService.updateMessageError(assistantId, error);
         await refreshMessages();
       },
-      onFinish: async (content, { conversation_id, traceId, observationId, toolCalls }) => {
+      onFinish: async (content, options) => {
+        const { conversation_id = '', traceId, observationId, toolCalls } = options;
         // if there is traceId, update it
         if (traceId) {
           msgTraceId = traceId;
-          await messageService.updateMessage(assistantId, {
-            traceId,
-            observationId: observationId ?? undefined,
-            conversation_id,
-          });
+          if (conversation_id) {
+            await messageService.updateMessage(assistantId, {
+              traceId,
+              observationId: observationId ?? undefined,
+              conversation_id,
+            });
+          } else {
+            await messageService.updateMessage(assistantId, {
+              traceId,
+              observationId: observationId ?? undefined,
+            });
+          }
         }
 
         if (toolCalls && toolCalls.length > 0) {
@@ -548,7 +556,11 @@ export const chatMessage: StateCreator<
         }
 
         // update the content after fetch result
-        await internal_updateMessageContent(assistantId, content, toolCalls, conversation_id);
+        if (conversation_id) {
+          await internal_updateMessageContent(assistantId, content, toolCalls, conversation_id);
+        } else {
+          await internal_updateMessageContent(assistantId, content, toolCalls);
+        }
       },
       onMessageHandle: async (chunk) => {
         switch (chunk.type) {
@@ -654,7 +666,7 @@ export const chatMessage: StateCreator<
     await messageService.updateMessage(id, { error });
     await get().refreshMessages();
   },
-  internal_updateMessageContent: async (id, content, toolCalls, conversation_id) => {
+  internal_updateMessageContent: async (id, content, toolCalls, conversation_id = '') => {
     const { internal_dispatchMessage, refreshMessages, internal_transformToolCalls } = get();
 
     // Due to the async update method and refresh need about 100ms
@@ -670,11 +682,18 @@ export const chatMessage: StateCreator<
       internal_dispatchMessage({ id, type: 'updateMessages', value: { content } });
     }
 
-    await messageService.updateMessage(id, {
-      content,
-      tools: toolCalls ? internal_transformToolCalls(toolCalls) : undefined,
-      conversation_id,
-    });
+    if (conversation_id) {
+      await messageService.updateMessage(id, {
+        content,
+        tools: toolCalls ? internal_transformToolCalls(toolCalls) : undefined,
+        conversation_id,
+      });
+    } else {
+      await messageService.updateMessage(id, {
+        content,
+        tools: toolCalls ? internal_transformToolCalls(toolCalls) : undefined,
+      });
+    }
     await refreshMessages();
   },
 

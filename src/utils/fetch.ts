@@ -306,7 +306,7 @@ export const fetchSSE = async (url: string, options: RequestInit & FetchSSEOptio
         throw new Error(error);
       },
       onmessage: (ev) => {
-        if (ev.event === 'stop') {
+        if (ev.event === 'stop' && ev.id) {
           conversation_id = ev.id;
         }
 
@@ -396,13 +396,22 @@ export const fetchSSE = async (url: string, options: RequestInit & FetchSSEOptio
         await toolCallsController.startAnimations(15);
       }
 
-      await options?.onFinish?.(output, {
-        conversation_id,
-        observationId,
-        toolCalls,
-        traceId,
-        type: finishedType,
-      });
+      if (conversation_id) {
+        await options?.onFinish?.(output, {
+          conversation_id,
+          observationId,
+          toolCalls,
+          traceId,
+          type: finishedType,
+        });
+      } else {
+        await options?.onFinish?.(output, {
+          observationId,
+          toolCalls,
+          traceId,
+          type: finishedType,
+        });
+      }
     }
   }
 

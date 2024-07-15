@@ -136,7 +136,7 @@ export const chatTopic: StateCreator<
   },
   // update
   summaryTopicTitle: async (topicId, messages) => {
-    const conversation_id = messages.at(-1)?.conversation_id;
+    const conversation_id = messages.at(-1)?.conversation_id || '';
 
     const { internal_updateTopicTitleInSummary, internal_updateTopicLoading } = get();
     const topic = topicSelectors.getTopicById(topicId)(get());
@@ -155,7 +155,11 @@ export const chatTopic: StateCreator<
         internal_updateTopicTitleInSummary(topicId, topic.title);
       },
       onFinish: async (text) => {
-        await get().internal_updateTopic(topicId, { title: text, conversation_id });
+        if (conversation_id) {
+          await get().internal_updateTopic(topicId, { title: text, conversation_id });
+        } else {
+          await get().internal_updateTopic(topicId, { title: text });
+        }
       },
       onLoadingChange: (loading) => {
         internal_updateTopicLoading(topicId, loading);

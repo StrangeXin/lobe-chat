@@ -427,21 +427,38 @@ class ChatService {
         }
 
         case 'assistant': {
-          return {
-            content: m.content,
-            conversation_id: m.conversation_id,
-            role: m.role,
-            tool_calls: m.tools?.map(
-              (tool): MessageToolCall => ({
-                function: {
-                  arguments: tool.arguments,
-                  name: genToolCallingName(tool.identifier, tool.apiName, tool.type),
-                },
-                id: tool.id,
-                type: 'function',
-              }),
-            ),
-          };
+          if (m.conversation_id) {
+            return {
+              content: m.content,
+              conversation_id: m.conversation_id,
+              role: m.role,
+              tool_calls: m.tools?.map(
+                (tool): MessageToolCall => ({
+                  function: {
+                    arguments: tool.arguments,
+                    name: genToolCallingName(tool.identifier, tool.apiName, tool.type),
+                  },
+                  id: tool.id,
+                  type: 'function',
+                }),
+              ),
+            };
+          } else {
+            return {
+              content: m.content,
+              role: m.role,
+              tool_calls: m.tools?.map(
+                (tool): MessageToolCall => ({
+                  function: {
+                    arguments: tool.arguments,
+                    name: genToolCallingName(tool.identifier, tool.apiName, tool.type),
+                  },
+                  id: tool.id,
+                  type: 'function',
+                }),
+              ),
+            };
+          }
         }
 
         case 'tool': {
