@@ -1,10 +1,11 @@
+import { ModelProvider } from '@/libs/agent-runtime';
 import { SystemAgentItem, UserSystemAgentConfig } from '@/types/user/settings';
 
-import { DEFAULT_MODEL, DEFAULT_PROVIDER } from './llm';
+// import { DEFAULT_MODEL, DEFAULT_PROVIDER } from './llm';
 
 export const DEFAULT_SYSTEM_AGENT_ITEM: SystemAgentItem = {
-  model: DEFAULT_MODEL,
-  provider: DEFAULT_PROVIDER,
+  model: 'dify-topic',
+  provider: ModelProvider.Dify,
 };
 
 export const DEFAULT_SYSTEM_AGENT_CONFIG: UserSystemAgentConfig = {

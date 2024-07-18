@@ -45,6 +45,8 @@ export const DEFAULT_LLM_CONFIG: UserModelProviderConfig = {
       { difyAgentApiKey: 'app-WFzjrZdAacHPUAGnOVcPSnG0', id: 'dify-02' },
       { difyAgentApiKey: 'app-QeJnem9HDPZSQr88sMGYRdDs', id: 'dify-03' },
       { difyAgentApiKey: 'app-d6h2JzeW2ROFDgypIBkwfmZt', id: 'dify-04' },
+      { difyAgentApiKey: 'app-qNhE31CGk8ISmE07qKsDDLzj', id: 'dify-05' },
+      { difyAgentApiKey: 'app-56en3w87tRKAmvTmRy6qKfHi', id: 'dify-topic' },
     ],
     enabled: true,
     enabledModels: filterEnabledModels(DifyProviderCard),
@@ -108,10 +110,10 @@ export const DEFAULT_LLM_CONFIG: UserModelProviderConfig = {
   },
 };
 
-export const DEFAULT_MODEL = 'gpt-3.5-turbo';
+// export const DEFAULT_MODEL = 'gpt-3.5-turbo';
 
-export const DEFAULT_PROVIDER = ModelProvider.OpenAI;
+// export const DEFAULT_PROVIDER = ModelProvider.OpenAI;
 
-// export const DEFAULT_MODEL = 'dify-chat';
+export const DEFAULT_MODEL = 'dify-chat';
 
-// export const DEFAULT_PROVIDER = ModelProvider.Dify;
+export const DEFAULT_PROVIDER = ModelProvider.Dify;

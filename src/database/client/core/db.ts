@@ -254,6 +254,47 @@ export class BrowserDB extends Dexie {
         type: 'agent',
         updatedAt: 1719974455085,
       },
+      {
+        config: {
+          chatConfig: {
+            autoCreateTopicThreshold: 2,
+            displayMode: 'chat',
+            enableAutoCreateTopic: true,
+            historyCount: 0,
+          },
+          model: 'dify-05',
+          params: {
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            temperature: 0.6,
+            top_p: 1,
+          },
+          plugins: [],
+          provider: 'dify',
+          systemRole: '',
+          tts: {
+            showAllLocaleVoice: false,
+            sttLocale: 'auto',
+            ttsService: 'openai',
+            voice: {
+              openai: 'alloy',
+            },
+          },
+        },
+        createdAt: 1719974455084,
+        group: 'default',
+        id: '43977853-36bb-4176-a707-8c4541abc764',
+        meta: {
+          avatar: '📄',
+          backgroundColor: 'rgba(0,0,0,0)',
+          description:
+            '能够帮助你深度研究目标企业客户的组织架构、业务模式、商业模型和财务状况等相关信息，帮助您更深度的了解您的客户！',
+          title: '目标客户研究报告',
+        },
+        pinned: 0,
+        type: 'agent',
+        updatedAt: 1719974455084,
+      },
     ]);
   }
 

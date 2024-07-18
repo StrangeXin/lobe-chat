@@ -18,7 +18,7 @@ export const transformDifyStream = (chunk: StreamEventData | any): StreamProtoco
       return { data: chunkContent, id: chunk.conversation_id, type: 'text' };
     }
     case 'message_end': {
-      return { data: 'stop', id: chunk.conversation_id, type: 'stop' };
+      return { data: '', id: chunk.conversation_id, type: 'stop' };
     }
     case 'agent_thought': {
       return { data: chunk.thought, id: chunk.conversation_id, type: 'text' };
@@ -31,7 +31,7 @@ export const transformDifyStream = (chunk: StreamEventData | any): StreamProtoco
       return { data: chunk.answer, id: chunk.conversation_id, type: 'text' };
     }
     case 'error': {
-      return { data: 'stop', id: `dify-${Date.now()}`, type: 'text' };
+      return { data: '', id: `dify-${Date.now()}`, type: 'text' };
     }
     case 'ping': {
       return { data: '', id: `dify-${Date.now()}`, type: 'text' };
@@ -43,7 +43,7 @@ export const transformDifyStream = (chunk: StreamEventData | any): StreamProtoco
       return { data: '', id: chunk.conversation_id, type: 'text' };
     }
     default: {
-      return { data: 'stop', id: `dify-${Date.now()}`, type: 'text' };
+      return { data: '', id: `dify-${Date.now()}`, type: 'text' };
     }
   }
 };
