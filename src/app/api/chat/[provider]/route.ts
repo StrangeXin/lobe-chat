@@ -1,8 +1,7 @@
 import { getPreferredRegion } from '@/app/api/config';
 import { createErrorResponse } from '@/app/api/errorResponse';
+import DifyProviderCard from '@/config/modelProviders/dify';
 import { AgentRuntime, ChatCompletionErrorPayload } from '@/libs/agent-runtime';
-import { useUserStore } from '@/store/user';
-import { modelConfigSelectors } from '@/store/user/selectors';
 import { ChatErrorType } from '@/types/fetch';
 import { ChatStreamPayload } from '@/types/openai/chat';
 import { getTracePayload } from '@/utils/trace';
@@ -42,13 +41,11 @@ export const POST = checkAuth(async (req: Request, { params, jwtPayload, createR
     }
 
     if (provider === 'dify') {
-      const modelCard = modelConfigSelectors.getCustomModelCard({ id: data.model, provider })(
-        useUserStore.getState(),
-      );
-
+      const chatModels = DifyProviderCard.chatModels;
+      const modelObj = chatModels.find((item) => item.id === data.model);
       agentRuntime = await initAgentRuntimeWithUserPayload(provider, {
         ...jwtPayload,
-        apiKey: modelCard?.difyAgentApiKey,
+        apiKey: modelObj?.difyAgentApiKey,
       });
     }
 
